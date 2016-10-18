@@ -1,0 +1,19 @@
+1.自动生成的对应函数格式：Java_包名_类名_接口名，例如，Java_com_example_helloworld_printJNI，
+   必须按照此JNI规范来操作，这样，Java虚拟机就可以在 类里 调用printJNI接口的时候自动找到这个C实现的Native函数调用；
+2.如果出现NDK命令不存在类似的错误，需要将NDK的路径添加到系统变量里;
+3.在src文件夹目录下，使用 javah -jni 包名+类名（例如:com.example.helloworld.MainAcitivity）,这时会自动生成一个1中
+  对应格式的.h文件（例如：com_example_helloworld_MainActivity.h），在工程根目录下建立一个jni文件夹，将生成的.h
+  文件放入文件夹里，并新建一个和.h文件同名的.c文件（参见文件下的.c文件）；新建Android.mk和Application.mk文件（参见
+  文件夹下的.mk文件），这样文件都准备完毕；
+4.在jni文件夹下，shift+鼠标左键，打开命令窗口，输入如下命令：
+  ndk-build NDK_PROJECT_PATH=. NDK_APPLICATION_MK=Application.mk
+  将生成的armeabi文件放入android工程的libs文件夹，如果已有armeabi文件夹，那么将生成的.so文件放入该文件夹；
+5.不要纯粹拷贝网上的代码，不然在生成.so文件时会编译出错，此时将文件格式改成UTF-8，如果还出现类似包含"\343"
+  的错误，那么可能是行首出现异常字符，此时将行首空格删除然后手动恢复空格即可；
+6.必须严格按照1的规范去声明函数，不然会出错；
+7.System.loadLibrary("文件名")，生成的.so文件一般是lib+名称+.so后缀，文件名部分只需填入 名称 部分即可，不需要
+  全部填入，Java虚拟机会自动查找的；
+8.注意，最后在AndroidManifest.xml文件中要加入文件控制权限，代码如下： 
+<!-- 文件权限 --> 
+<uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/> 
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
